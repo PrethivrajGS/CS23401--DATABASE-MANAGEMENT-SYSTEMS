@@ -1,0 +1,82 @@
+SQL> create table gsp(emp_name varchar(30),emp_id number(5),salary number);
+
+Table created.
+
+SQL> select* from gsp;
+
+no rows selected
+
+SQL> insert into gsp values('prethiv',3001,45000);
+
+1 row created.
+
+SQL> select* from gsp;
+
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3001      45000
+
+SQL> insert into gsp values('aswin',3002,55000);
+
+1 row created.
+
+SQL> insert into gsp values('vetri',3003,59000);
+
+1 row created.
+
+SQL> select* from gsp;
+
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3001      45000
+aswin                                3002      55000
+vetri                                3003      59000
+
+SQL> update gsp set emp_id=3005 where salary=45000;
+
+1 row updated.
+
+SQL> select* from gsp;
+
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000
+
+SQL> insert into gsp values('mama',3004,49000);
+
+1 row created.
+
+SQL> select* from gsp;
+
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000
+mama                                 3004      49000
+
+SQL> delete from gsp where salary=49000;
+
+1 row deleted.
+
+SQL> select* from gsp;
+
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000
+
+SQL> alter table gsp add experience number;
+
+Table altered.
+
+SQL> select* from gsp;
+
+EMP_NAME                           EMP_ID     SALARY EXPERIENCE
+------------------------------ ---------- ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000

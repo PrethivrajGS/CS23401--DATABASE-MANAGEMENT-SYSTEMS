@@ -1,0 +1,254 @@
+//JOIN FUCTIONS::
+SQL> select* from pranesh;
+
+   DEPT_ID DEPT_NAME       YEAR CITY
+---------- --------------- ---- ------------------------------
+       101 ct              1980 palacode
+       102 pt              1990 marandahalli
+       103 it              1997 panchapalli
+       104 auto            1998 anchetty
+
+SQL> select* from aswin;
+
+    EMP_ID EMP_NAME                       CITY
+---------- ------------------------------ ------------------------------
+      3001 appa                           palacode
+      3002 akka                           marandahalli
+      3003 amma                           panchapalli
+      3004 sister                         anchetty
+
+//INNER JOIN
+
+SQL> select aswin.emp_id,aswin.emp_name,pranesh.dept_id from aswin INNER JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID EMP_NAME                          DEPT_ID
+---------- ------------------------------ ----------
+      3001 appa                                  101
+      3002 akka                                  102
+      3003 amma                                  103
+      3004 sister                                104
+
+SQL> select aswin.emp_id,pranesh.dept_name,pranesh.dept_id from aswin INNER JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID DEPT_NAME          DEPT_ID
+---------- --------------- ----------
+      3001 ct                     101
+      3002 pt                     102
+      3003 it                     103
+      3004 auto                   104
+
+//LEFT JOIN:
+SQL> select aswin.emp_id,pranesh.dept_id from aswin LEFT JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+      3004        104
+
+SQL> update pranesh set city='RAYAKOTTAI' where dept_id=104;
+
+1 row updated.
+
+SQL> select* from pranesh;
+
+   DEPT_ID DEPT_NAME       YEAR CITY
+---------- --------------- ---- ------------------------------
+       101 ct              1980 palacode
+       102 pt              1990 marandahalli
+       103 it              1997 panchapalli
+       104 auto            1998 RAYAKOTTAI
+
+SQL> select* from aswin;
+
+    EMP_ID EMP_NAME                       CITY
+---------- ------------------------------ ------------------------------
+      3001 appa                           palacode
+      3002 akka                           marandahalli
+      3003 amma                           panchapalli
+      3004 sister                         anchetty
+
+SQL> select aswin.emp_id,pranesh.dept_id from aswin LEFT JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+      3004
+
+//RIGHT JOIN:
+SQL> select aswin.emp_id,pranesh.dept_id from aswin RIGHT JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+
+//FULL JOIN:
+SQL> select aswin.emp_id,pranesh.dept_id from aswin FULL JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+      3004
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SQL> select aswin.emp_id,pranesh.dept_id from PRANESH LEFT JOIN ASWIN ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+
+SQL> select aswin.emp_id,pranesh.dept_id from PRANESH LEFT JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+
+SQL> select pranesh.dept_id,aswin.emp_id from PRANESH LEFT JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+   DEPT_ID     EMP_ID
+---------- ----------
+       101       3001
+       102       3002
+       103       3003
+       104
+
+SQL> select pranesh.dept_id,aswin.emp_id from PRANESH right JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+   DEPT_ID     EMP_ID
+---------- ----------
+       101       3001
+       102       3002
+       103       3003
+                 3004
+
+SQL> select pranesh.dept_id,aswin.emp_id from PRANESH FULL JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+   DEPT_ID     EMP_ID
+---------- ----------
+       101       3001
+       102       3002
+       103       3003
+                 3004
+       104
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///VIEW FUNCTIONS:
+// CREATE VIEW:
+SQL> SELECT* FROM PERSON;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3001 IT              25000
+      3002 CT              29000
+      3003 CT              19300
+      3004 PT              19300
+      3005 PT              29300
+      3006 IT              39300
+      3007 ECE             38300
+
+7 rows selected.
+
+SQL> create view IT_person as select emp_id,salary from person where dept_name='IT';
+
+View created.
+
+SQL> SELECT* FROM IT_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3001      25000
+      3006      39300
+SQL> create view ECE_person as select emp_id,salary from person where dept_name='ECE';
+
+View created.
+
+SQL> SELECT* FROM ECE_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3007      38300
+
+SQL> SELECT* FROM IT_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3001      25000
+      3006      39300
+
+SQL> SELECT* FROM ECE_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3007      38300
+
+//DROPPING VIEW:
+
+SQL> drop view it_person;
+
+View dropped.
+
+SQL> SELECT* FROM IT_person;
+SELECT* FROM IT_person
+             *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+//CREATE OR REPLACE::
+
+SQL> create or replace view IT_person as select emp_id,dept_name,salary from person where dept_name='IT';
+
+View created.
+
+SQL> select * from IT_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3001 IT              25000
+      3006 IT              39300
+
+SQL> create or replace view ECE_person as select emp_id,dept_name,salary from person where dept_name='ECE';
+
+View created.
+
+SQL> select * from ECE_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3007 ECE             38300
+
+SQL> create or replace view CT_person as select emp_id,dept_name,salary from person where dept_name='CT';
+
+View created.
+
+SQL> select * from CT_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3002 CT              29000
+      3003 CT              19300
+
+SQL> create or replace view PT_person as select emp_id,dept_name,salary from person where dept_name='PT';
+
+View created.
+
+SQL> select * from PT_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3004 PT              19300
+      3005 PT              29300
