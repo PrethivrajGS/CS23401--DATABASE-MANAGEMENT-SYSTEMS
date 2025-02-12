@@ -1,0 +1,162 @@
+SQL> create table city(city_name varchar(20),city_id number);
+Table created.
+SQL> insert into city values('chennai',101);
+1 row created.
+SQL> insert into city values('mumbai',102);
+1 row created.
+SQL> insert into city values('delhi',103);
+1 row created.
+SQL> insert into city values('kolkata',104);
+1 row created.
+SQL> insert into city values('bengaluru',105);
+1 row created.
+SQL> select* from city;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+kolkata                     104                                                 
+bengaluru                   105                                                 
+SQL> create view selva as select city_name,city_id from city;
+View created.
+SQL> select* from selva;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+kolkata                     104                                                 
+bengaluru                   105                                                 
+SQL> update selva set city_name='hyderabad' where city_id=104;
+1 row updated.
+SQL> select* from selva;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+SQL> select* from city;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+SQL> update city set city_name='pune' where city_id=103;
+1 row updated.
+SQL> select* from city;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+pune                        103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+SQL> select* from selva;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+pune                        103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+
+SQL> create table empl(emp_id int ,emp_name varchar(20),dept varchar(20),salary number);
+Table created.
+SQL> insert into empl values(1001,'aswin','ct',25000);
+1 row created.
+SQL> insert into empl values(1002,'mama','ct',29000);
+1 row created.
+SQL> insert into empl values(1003,'vetri','ct',29800);
+1 row created.
+SQL> insert into empl values(1004,'gsp','ct',31800);
+1 row created.
+SQL> insert into empl values(1005,'anto','ct',30900);
+1 row created.
+SQL> insert into empl values(1006,'ashish','ct',33900);
+1 row created.
+SQL> insert into empl values(1007,'kram','ct',33500);
+1 row created.
+SQL> insert into empl values(1008,'salih','ct',35500);
+1 row created.
+SQL> insert into empl values(1009,'piruthivi','ct',25500);
+1 row created.
+SQL> insert into empl values(1010,'deva','ct',28550);
+1 row created.
+SQL> select* from empl;
+    EMP_ID EMP_NAME             DEPT                     SALARY                 
+---------- -------------------- -------------------- ----------                 
+      1001 aswin                ct                        25000                 
+      1002 mama                 ct                        29000                 
+      1003 vetri                ct                        29800                 
+      1004 gsp                  ct                        31800                 
+      1005 anto                 ct                        30900                 
+      1006 ashish               ct                        33900                 
+      1007 kram                 ct                        33500                 
+      1008 salih                ct                        35500                 
+      1009 piruthivi            ct                        25500                 
+      1010 deva                 ct                        28550                 
+10 rows selected.
+
+SQL> create view person as select emp_id,emp_name,salary from empl;
+create view person as select emp_id,emp_name,salary from empl
+                                                        *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+SQL> rename table empl to empls;
+rename table empl to empls
+      *
+ERROR at line 1:
+ORA-00903: invalid table name 
+SQL> select* from empl;
+    EMP_ID EMP_NAME             DEPT                     SALARY                 
+---------- -------------------- -------------------- ----------                 
+      1001 aswin                ct                        25000                 
+      1002 mama                 ct                        29000                 
+      1003 vetri                ct                        29800                 
+      1004 gsp                  ct                        31800                 
+      1005 anto                 ct                        30900                 
+      1006 ashish               ct                        33900                 
+      1007 kram                 ct                        33500                 
+      1008 salih                ct                        35500                 
+      1009 piruthivi            ct                        25500                 
+      1010 deva                 ct                        28550                 
+10 rows selected.
+SQL> alter table empl rename to empls;
+Table altered.
+SQL> select* from empls;
+    EMP_ID EMP_NAME             DEPT                     SALARY                 
+---------- -------------------- -------------------- ----------                 
+      1001 aswin                ct                        25000                 
+      1002 mama                 ct                        29000                 
+      1003 vetri                ct                        29800                 
+      1004 gsp                  ct                        31800                 
+      1005 anto                 ct                        30900                 
+      1006 ashish               ct                        33900                 
+      1007 kram                 ct                        33500                 
+      1008 salih                ct                        35500                 
+      1009 piruthivi            ct                        25500                 
+      1010 deva                 ct                        28550                 
+10 rows selected.
+SQL> CREATE OR REPLACE VIEW amma AS SELECT emp_id, emp_name, salary FROM empls WHERE salary > (SELECT MIN(salary) FROM empls);
+View created.
+SQL> select * from amma;
+
+    EMP_ID EMP_NAME                 SALARY                                      
+---------- -------------------- ----------                                      
+      1002 mama                      29000                                      
+      1003 vetri                     29800                                      
+      1004 gsp                       31800                                      
+      1005 anto                      30900                                      
+      1006 ashish                    33900                                      
+      1007 kram                      33500                                      
+      1008 salih                     35500                                      
+      1009 piruthivi                 25500                                      
+      1010 deva                      28550                                      
+9 rows selected.
+SQL> spool off;
