@@ -1,0 +1,1057 @@
+                                                                                DDL AND DML
+SQL> create table gsp(emp_name varchar(30),emp_id number(5),salary number);
+Table created.
+SQL> select* from gsp;
+no rows selected
+SQL> insert into gsp values('prethiv',3001,45000);
+1 row created.
+
+SQL> select* from gsp;
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3001      45000
+
+SQL> insert into gsp values('aswin',3002,55000);
+1 row created.
+SQL> insert into gsp values('vetri',3003,59000);
+1 row created.
+
+SQL> select* from gsp;
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3001      45000
+aswin                                3002      55000
+vetri                                3003      59000
+
+SQL> update gsp set emp_id=3005 where salary=45000;
+1 row updated.
+
+SQL> select* from gsp;
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000
+
+SQL> insert into gsp values('mama',3004,49000);
+1 row created.
+
+SQL> select* from gsp;
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000
+mama                                 3004      49000
+
+SQL> delete from gsp where salary=49000;
+1 row deleted.
+
+SQL> select* from gsp;
+EMP_NAME                           EMP_ID     SALARY
+------------------------------ ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000
+
+SQL> alter table gsp add experience number;
+Table altered.
+
+SQL> select* from gsp;
+EMP_NAME                           EMP_ID     SALARY EXPERIENCE
+------------------------------ ---------- ---------- ----------
+prethiv                              3005      45000
+aswin                                3002      55000
+vetri                                3003      59000
+ 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                         JOIN FUCTIONS
+SQL> select* from pranesh;
+
+   DEPT_ID DEPT_NAME       YEAR CITY
+---------- --------------- ---- ------------------------------
+       101 ct              1980 palacode
+       102 pt              1990 marandahalli
+       103 it              1997 panchapalli
+       104 auto            1998 anchetty
+
+SQL> select* from aswin;
+
+    EMP_ID EMP_NAME                       CITY
+---------- ------------------------------ ------------------------------
+      3001 appa                           palacode
+      3002 akka                           marandahalli
+      3003 amma                           panchapalli
+      3004 sister                         anchetty
+
+//INNER JOIN
+
+SQL> select aswin.emp_id,aswin.emp_name,pranesh.dept_id from aswin INNER JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID EMP_NAME                          DEPT_ID
+---------- ------------------------------ ----------
+      3001 appa                                  101
+      3002 akka                                  102
+      3003 amma                                  103
+      3004 sister                                104
+
+SQL> select aswin.emp_id,pranesh.dept_name,pranesh.dept_id from aswin INNER JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID DEPT_NAME          DEPT_ID
+---------- --------------- ----------
+      3001 ct                     101
+      3002 pt                     102
+      3003 it                     103
+      3004 auto                   104
+
+//LEFT JOIN:
+SQL> select aswin.emp_id,pranesh.dept_id from aswin LEFT JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+      3004        104
+
+SQL> update pranesh set city='RAYAKOTTAI' where dept_id=104;
+
+1 row updated.
+
+SQL> select* from pranesh;
+
+   DEPT_ID DEPT_NAME       YEAR CITY
+---------- --------------- ---- ------------------------------
+       101 ct              1980 palacode
+       102 pt              1990 marandahalli
+       103 it              1997 panchapalli
+       104 auto            1998 RAYAKOTTAI
+
+SQL> select* from aswin;
+
+    EMP_ID EMP_NAME                       CITY
+---------- ------------------------------ ------------------------------
+      3001 appa                           palacode
+      3002 akka                           marandahalli
+      3003 amma                           panchapalli
+      3004 sister                         anchetty
+
+SQL> select aswin.emp_id,pranesh.dept_id from aswin LEFT JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+      3004
+SQL> select aswin.emp_id,pranesh.dept_id from PRANESH LEFT JOIN ASWIN ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+
+SQL> select aswin.emp_id,pranesh.dept_id from PRANESH LEFT JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+
+SQL> select pranesh.dept_id,aswin.emp_id from PRANESH LEFT JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+   DEPT_ID     EMP_ID
+---------- ----------
+       101       3001
+       102       3002
+       103       3003
+       104
+
+
+//RIGHT JOIN:
+SQL> select aswin.emp_id,pranesh.dept_id from aswin RIGHT JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+SQL> select pranesh.dept_id,aswin.emp_id from PRANESH right JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+   DEPT_ID     EMP_ID
+---------- ----------
+       101       3001
+       102       3002
+       103       3003
+                 3004
+
+//FULL JOIN:
+SQL> select aswin.emp_id,pranesh.dept_id from aswin FULL JOIN pranesh ON aswin.CITY=pranesh.CITY;
+
+    EMP_ID    DEPT_ID
+---------- ----------
+      3001        101
+      3002        102
+      3003        103
+                  104
+      3004
+
+SQL> select pranesh.dept_id,aswin.emp_id from PRANESH FULL JOIN ASWIN ON pranesh.CITY=aswin.CITY;
+
+   DEPT_ID     EMP_ID
+---------- ----------
+       101       3001
+       102       3002
+       103       3003
+                 3004
+       104
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                      VIEW FUNCTIONS:
+// CREATE VIEW:
+SQL> SELECT* FROM PERSON;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3001 IT              25000
+      3002 CT              29000
+      3003 CT              19300
+      3004 PT              19300
+      3005 PT              29300
+      3006 IT              39300
+      3007 ECE             38300
+
+7 rows selected.
+
+SQL> create view IT_person as select emp_id,salary from person where dept_name='IT';
+View created.
+SQL> SELECT* FROM IT_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3001      25000
+      3006      39300
+SQL> create view ECE_person as select emp_id,salary from person where dept_name='ECE';
+View created.
+SQL> SELECT* FROM ECE_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3007      38300
+
+SQL> SELECT* FROM IT_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3001      25000
+      3006      39300
+
+SQL> SELECT* FROM ECE_person;
+
+    EMP_ID     SALARY
+---------- ----------
+      3007      38300
+
+//DROPPING VIEW:
+SQL> drop view it_person;
+View dropped.
+
+SQL> SELECT* FROM IT_person;
+SELECT* FROM IT_person
+             *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+//CREATE OR REPLACE::
+
+SQL> create or replace view IT_person as select emp_id,dept_name,salary from person where dept_name='IT';
+View created.
+
+SQL> select * from IT_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3001 IT              25000
+      3006 IT              39300
+
+SQL> create or replace view ECE_person as select emp_id,dept_name,salary from person where dept_name='ECE';
+View created.
+SQL> select * from ECE_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3007 ECE             38300
+
+SQL> create or replace view CT_person as select emp_id,dept_name,salary from person where dept_name='CT';
+View created.
+SQL> select * from CT_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3002 CT              29000
+      3003 CT              19300
+
+SQL> create or replace view PT_person as select emp_id,dept_name,salary from person where dept_name='PT';
+View created.
+SQL> select * from PT_person;
+
+    EMP_ID DEPT_NAME      SALARY
+---------- ---------- ----------
+      3004 PT              19300
+      3005 PT              29300
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                       'UPDATING VIEWS'
+
+SQL> create table city(city_name varchar(20),city_id number);
+Table created.
+SQL> insert into city values('chennai',101);
+1 row created.
+SQL> insert into city values('mumbai',102);
+1 row created.
+SQL> insert into city values('delhi',103);
+1 row created.
+SQL> insert into city values('kolkata',104);
+1 row created.
+SQL> insert into city values('bengaluru',105);
+1 row created.
+SQL> select* from city;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+kolkata                     104                                                 
+bengaluru                   105                                                 
+SQL> create view selva as select city_name,city_id from city;
+View created.
+SQL> select* from selva;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+kolkata                     104                                                 
+bengaluru                   105                                                 
+SQL> update selva set city_name='hyderabad' where city_id=104;
+1 row updated.
+SQL> select* from selva;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+SQL> select* from city;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+delhi                       103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+SQL> update city set city_name='pune' where city_id=103;
+1 row updated.
+SQL> select* from city;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+pune                        103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+SQL> select* from selva;
+CITY_NAME               CITY_ID                                                 
+-------------------- ----------                                                 
+chennai                     101                                                 
+mumbai                      102                                                 
+pune                        103                                                 
+hyderabad                   104                                                 
+bengaluru                   105                                                 
+
+SQL> create table empl(emp_id int ,emp_name varchar(20),dept varchar(20),salary number);
+Table created.
+SQL> insert into empl values(1001,'aswin','ct',25000);
+1 row created.
+SQL> insert into empl values(1002,'mama','ct',29000);
+1 row created.
+SQL> insert into empl values(1003,'vetri','ct',29800);
+1 row created.
+SQL> insert into empl values(1004,'gsp','ct',31800);
+1 row created.
+SQL> insert into empl values(1005,'anto','ct',30900);
+1 row created.
+SQL> insert into empl values(1006,'ashish','ct',33900);
+1 row created.
+SQL> insert into empl values(1007,'kram','ct',33500);
+1 row created.
+SQL> insert into empl values(1008,'salih','ct',35500);
+1 row created.
+SQL> insert into empl values(1009,'piruthivi','ct',25500);
+1 row created.
+SQL> insert into empl values(1010,'deva','ct',28550);
+1 row created.
+SQL> select* from empl;
+    EMP_ID EMP_NAME             DEPT                     SALARY                 
+---------- -------------------- -------------------- ----------                 
+      1001 aswin                ct                        25000                 
+      1002 mama                 ct                        29000                 
+      1003 vetri                ct                        29800                 
+      1004 gsp                  ct                        31800                 
+      1005 anto                 ct                        30900                 
+      1006 ashish               ct                        33900                 
+      1007 kram                 ct                        33500                 
+      1008 salih                ct                        35500                 
+      1009 piruthivi            ct                        25500                 
+      1010 deva                 ct                        28550                 
+10 rows selected.
+
+SQL> create view person as select emp_id,emp_name,salary from empl;
+create view person as select emp_id,emp_name,salary from empl
+                                                        *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+SQL> rename table empl to empls;
+rename table empl to empls
+      *
+ERROR at line 1:
+ORA-00903: invalid table name 
+SQL> select* from empl;
+    EMP_ID EMP_NAME             DEPT                     SALARY                 
+---------- -------------------- -------------------- ----------                 
+      1001 aswin                ct                        25000                 
+      1002 mama                 ct                        29000                 
+      1003 vetri                ct                        29800                 
+      1004 gsp                  ct                        31800                 
+      1005 anto                 ct                        30900                 
+      1006 ashish               ct                        33900                 
+      1007 kram                 ct                        33500                 
+      1008 salih                ct                        35500                 
+      1009 piruthivi            ct                        25500                 
+      1010 deva                 ct                        28550                 
+10 rows selected.
+SQL> alter table empl rename to empls;
+Table altered.
+SQL> select* from empls;
+    EMP_ID EMP_NAME             DEPT                     SALARY                 
+---------- -------------------- -------------------- ----------                 
+      1001 aswin                ct                        25000                 
+      1002 mama                 ct                        29000                 
+      1003 vetri                ct                        29800                 
+      1004 gsp                  ct                        31800                 
+      1005 anto                 ct                        30900                 
+      1006 ashish               ct                        33900                 
+      1007 kram                 ct                        33500                 
+      1008 salih                ct                        35500                 
+      1009 piruthivi            ct                        25500                 
+      1010 deva                 ct                        28550                 
+10 rows selected.
+SQL> CREATE OR REPLACE VIEW amma AS SELECT emp_id, emp_name, salary FROM empls WHERE salary > (SELECT MIN(salary) FROM empls);
+View created.
+SQL> select * from amma;
+
+    EMP_ID EMP_NAME                 SALARY                                      
+---------- -------------------- ----------                                      
+      1002 mama                      29000                                      
+      1003 vetri                     29800                                      
+      1004 gsp                       31800                                      
+      1005 anto                      30900                                      
+      1006 ashish                    33900                                      
+      1007 kram                      33500                                      
+      1008 salih                     35500                                      
+      1009 piruthivi                 25500                                      
+      1010 deva                      28550                                      
+9 rows selected.
+SQL> spool off;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
+                                                                    FUNCTIONS
+1:
+SQL> create table student(stu_id number(4),total number(4,2));
+Table created.
+SQL> insert into student values(3001,457.98);
+insert into student values(3001,457.98)                                *
+ERROR at line 1:
+ORA-01438: value larger than specified precision allowed for this column
+SQL> alter table student modify total number(5,2);
+Table altered.
+SQL> insert into student values(3001,457.98);
+1 row created.
+//similarly.
+SQL> insert into student values(3009,499.98);
+1 row created.
+SQL> insert into student values(3010,498.99);
+1 row created.
+SQL> select*from student;
+    STU_ID      TOTAL
+---------- ----------
+      3001     457.98
+      3002      489.9
+      3003     479.78
+      3004     471.78
+      3005     491.67
+      3006     495.69
+      3007     405.29
+      3008     445.28
+      3009     499.98
+      3010     498.99
+10 rows selected.
+SQL> select abs(total) from student;
+ABS(TOTAL)                                                                      
+----------                                                                      
+    457.98                                                                      
+     489.9                                                                      
+    479.78                                                                      
+    471.78                                                                      
+    491.67                                                                      
+    495.69                                                                      
+    405.29                                                                      
+    445.28                                                                      
+    499.98                                                                      
+    498.99                                                                      
+10 rows selected.
+SQL> select ceil(total) from student;
+CEIL(TOTAL)                                                                     
+-----------                                                                     
+        458                                                                     
+        490                                                                     
+        480                                                                     
+        472                                                                     
+        492                                                                     
+        496                                                                     
+        406                                                                     
+        446                                                                     
+        500                                                                     
+        499                                                                     
+10 rows selected.
+SQL> select avg(total) from student;
+AVG(TOTAL)                                                                      
+----------                                                                      
+   473.634                                                                      
+SQL> select floor(avg(total)) from student;
+FLOOR(AVG(TOTAL))                                                               
+-----------------                                                               
+              473                                                               
+SQL> select ceil(avg(total)) from student;
+CEIL(AVG(TOTAL))                                                                
+----------------                                                                
+             474                                                                
+SQL> select round(avg(total),2) from student;
+ROUND(AVG(TOTAL),2)                                                             
+-------------------                                                             
+             473.63                                                             
+SQL> select mod(avg(total),9) from student;
+MOD(AVG(TOTAL),9)                                                               
+-----------------                                                               
+            5.634                                                               
+SQL> select power(avg(total),2) from student;
+POWER(AVG(TOTAL),2)                                                             
+-------------------                                                             
+         224329.166                                                             
+SQL> select sqrt(avg(total)) from student;
+SQRT(AVG(TOTAL))                                                                
+----------------                                                                
+       21.763134                                                                
+SQL> select round(sqrt(avg(total)),3) from student;
+ROUND(SQRT(AVG(TOTAL)),3)                                                       
+-------------------------                                                       
+                   21.763                                                       
+SQL> select trunc(avg(total),2) from student;
+TRUNC(AVG(TOTAL),2)                                                             
+-------------------                                                             
+             473.63  
+
+2.                                                           
+SQL> alter table student add name varchar(20);
+Table altered.
+SQL> select* from student;
+    STU_ID      TOTAL NAME                                                      
+---------- ---------- --------------------                                      
+      3001     457.98                                                           
+      3002      489.9                                                           
+      3003     479.78                                                           
+      3004     471.78                                                           
+      3005     491.67                                                           
+      3006     495.69                                                           
+      3007     405.29                                                           
+      3008     445.28                                                           
+      3009     499.98                                                           
+      3010     498.99                                                           
+
+10 rows selected.
+
+SQL> update student set name='gsp' where stu_id=3001;
+
+1 row updated.
+
+SQL> select* from student;
+
+    STU_ID      TOTAL NAME                                                      
+---------- ---------- --------------------                                      
+      3001     457.98 gsp                                                       
+      3002      489.9                                                           
+      3003     479.78                                                           
+      3004     471.78                                                           
+      3005     491.67                                                           
+      3006     495.69                                                           
+      3007     405.29                                                           
+      3008     445.28                                                           
+      3009     499.98                                                           
+      3010     498.99                                                           
+
+10 rows selected.
+//similarly.
+SQL> update student set name='pranesh' where stu_id=3002;
+1 row updated.
+SQL> update student set name='vetri' where stu_id=3010;
+1 row updated.
+SQL> select* from student;
+    STU_ID      TOTAL NAME                                                      
+---------- ---------- --------------------                                      
+      3001     457.98 gsp                                                       
+      3002      489.9 pranesh                                                   
+      3003     479.78 dinesh                                                    
+      3004     471.78 jagan                                                     
+      3005     491.67 aswin                                                     
+      3006     495.69 jai                                                       
+      3007     405.29 sathish                                                   
+      3008     445.28 gokul                                                     
+      3009     499.98 rasu                                                      
+      3010     498.99 vetri                                                     
+10 rows selected.
+SQL> select upper(name) as upper_text from student;
+UPPER_TEXT                                                                      
+--------------------                                                            
+GSP                                                                             
+PRANESH                                                                         
+DINESH                                                                          
+JAGAN                                                                           
+ASWIN                                                                           
+JAI                                                                             
+SATHISH                                                                         
+GOKUL                                                                           
+RASU                                                                            
+VETRI                                                                           
+10 rows selected.
+SQL> select concat('gsp','aswin')as from dual ;
+CONCAT('                                                                        
+--------                                                                        
+gspaswin                                                                        
+SQL> select lower(name) as lower_text from student;
+LOWER_TEXT                                                                      
+--------------------                                                            
+gsp                                                                             
+pranesh                                                                         
+dinesh                                                                          
+jagan                                                                           
+aswin                                                                           
+jai                                                                             
+sathish                                                                         
+gokul                                                                                   
+rasu                                                                            
+vetri                                                                           
+10 rows selected.
+SQL> select chr(78) from dual;
+C                                                                               
+-                                                                               
+N                                                                               
+SQL> SELECT LPAD('123', 5, '0') from dual;
+LPAD(                                                                           
+-----                                                                           
+00123                                                                           
+SQL> SELECT RPAD('123', 5, '0') from dual;
+RPAD(                                                                           
+-----                                                                           
+12300                                                                           
+SQL> select soundex('apple') from dual;
+SOUN                                                                            
+----                                                                            
+A140                                                                            
+SQL> select ltrim('orange') from dual;
+LTRIM(                                                                          
+------                                                                          
+orange                                                                          
+SQL> select ltrim('******orange','*') from dual;
+LTRIM(                                                                          
+------                                                                          
+orange                                                                          
+SQL> select ltrim('orange*******','*') from dual;
+LTRIM('ORANGE                                                                   
+-------------                                                                   
+orange*******                                                                   
+SQL> select rtrim('orange*******','*') from dual;
+RTRIM(                                                                          
+------                                                                          
+orange                                                                          
+SQL> select replace('prethiv selva','selva','gsp') as replaced_text from dual;
+REPLACED_TE                                                                     
+-----------                                                                     
+prethiv gsp                                                                     
+SQL> SELECT SUBSTR('Hello World', 7, 5) from dual;
+SUBST                                                                           
+-----                                                                           
+World                                                                           
+SQL> select translate('123-456','123','abc') from dual;
+TRANSLA                                                                         
+-------                                                                         
+abc-456                                                                         
+SQL> select translate('123-456','134','3bc') from dual;
+TRANSLA                                                                         
+-------                                                                         
+32b-c56 
+
+3:                                                                        
+
+SQL> SELECT CURRENT_DATE AS today from dual;
+TODAY                                                                           
+---------                                                                       
+28-JAN-25                                                                       
+SQL> select add_months(sysdate,5)as future_date from dual;
+FUTURE_DA                                                                       
+---------                                                                       
+28-JUN-25                                                                       
+SQL> SELECT ROUND(SYSDATE, 'DAY') AS rounded_day FROM dual;
+ROUNDED_D                                                                       
+---------                                                                       
+26-JAN-25                                                                       
+SQL> SELECT ROUND(SYSDATE, 'MONTH') AS rounded_day FROM dual;
+ROUNDED_D                                                                       
+---------                                                                       
+01-FEB-25                                                                       
+SQL> SELECT ROUND(SYSDATE, 'YEAR') AS rounded_day FROM dual;
+ROUNDED_D                                                                       
+---------                                                                       
+01-JAN-25                                                                       
+SQL> SELECT TRUNC(SYSDATE, 'MONTH') AS truncated_month FROM dual;
+TRUNCATED                                                                       
+---------                                                                       
+01-JAN-25                                                                       
+SQL> SELECT TRUNC(SYSDATE, 'MONTH') AS truncated_month FROM dual;
+TRUNCATED                                                                       
+---------                                                                       
+01-JAN-25                                                                       
+SQL> SELECT MONTHS_BETWEEN(TO_DATE('2025-01-28', 'YYYY-MM-DD'), TO_DATE('2024-12-28', 'YYYY-MM-DD')) AS month_difference FROM dual;
+MONTH_DIFFERENCE                                                                
+----------------                                                                
+               1                                                                
+SQL> SELECT MONTHS_BETWEEN(TO_DATE('2025-01-28', 'YYYY-MM-DD'), TO_DATE('2024-12-28', 'YYYY-MM-DD')) AS date_difference FROM dual;
+DATE_DIFFERENCE                                                                 
+---------------                                                                 
+              1                                                                 
+SQL> SELECT LAST_DAY(SYSDATE) AS last_day_of_year FROM dual;
+LAST_DAY_                                                                       
+---------                                                                       
+31-JAN-25   
+
+4.
+                                                                    
+SQL> select greatest(23,45,26,35,67,89,90)from dual;
+GREATEST(23,45,26,35,67,89,90)                                                  
+------------------------------                                                  
+                            90                                                  
+SQL> select least(23,45,26,35,67,89,90)from dual;
+LEAST(23,45,26,35,67,89,90)                                                     
+---------------------------                                                     
+                         23  
+
+5:AGGREGATE FUNCTIONS :
+SQL> SELECT MIN(country_id) from location;
+MIN(COUNTRY_ID)
+---------------
+            101
+SQL> SELECT MAX(country_id) from location;
+MAX(COUNTRY_ID)
+---------------
+            110
+SQL> SELECT AVG(country_id) from location;
+AVG(COUNTRY_ID)
+---------------
+          105.5
+SQL> SELECT SUM(country_id) from location;
+SUM(COUNTRY_ID)
+---------------
+           1055
+SQL> SELECT COUNT(country_id) from location;
+COUNT(COUNTRY_ID)
+-----------------
+               10
+                                               
+SQL> spool off;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+                                                                                FINDING SALARY
+SQL> select* from employees;
+
+EMPLOYEE_ID FIRST_NAME           LAST_NAME                 EMAIL                     PHONE_NUMBER HIRE_DATE JOB_ID         SALARY COMMISSION_PCT MANAGER_ID    DEPT_ID
+----------- -------------------- ------------------------- ------------------------- ------------ --------- ---------- ---------- -------------- ---------- ----------
+        607 deva                 null                      deva@gmail.com              9992912345 13-JAN-22 503            220000            8.2       1003        401
+        608 akash                patti                     akash@gmail.com             9876543210 22-FEB-23 502            230000            3.2       1002        403
+        609 rakesh               frd                       rakesh@gmail.com            9874543210 21-JUN-23 503            178940            3.5       1001        403
+        610 vignesh              frd                       vicky@gmail.com              978443210 22-JUN-24 503            218940            3.5       1001        403
+        601 GSP                  RAJ                       GSP@GMAIL.COM               9092810477 12-JAN-01 504            200000              2       1001        401
+        602 SAM                  PARAM                     SAM@GMAIL.COM               9092812477 13-FEB-02 504            250000              9       1001        401
+        603 SAM                  AMMA                      AMMA@GMAIL.COM              9942943525 14-MAR-03 503            259000            9.5       1002        402
+        604 APPA                 AMMA                      APPA@GMAIL.COM              9942943523 14-APR-04 503            259980           9.53       1002        402
+        605 VETRI                VEL                       VETRI@GMAIL.COM             9942933523 16-MAY-05 504            254980           9.23       1003        403
+        606 SRIJITH              BHAIYA                    BHAIYA@GMAIL.COM            9994933523 16-JUN-06 502            254932           5.23       1003        403
+
+10 rows selected.
+
+SQL> select min(salary) from employees;
+
+MIN(SALARY)
+-----------
+     178940
+
+SQL> select avg(salary) from employees;
+
+AVG(SALARY)
+-----------
+   232677.2
+
+SQL> select max(salary) from employees;
+
+MAX(SALARY)
+-----------
+     259980
+
+SQL> select first_name,last_name,salary from employees where salary=(select max(salary) from employees where salary<(select max(salary) from employees where salary between (select min(salary)from employees) and(select avg(salary)from employees)));
+
+FIRST_NAME           LAST_NAME                     SALARY
+-------------------- ------------------------- ----------
+deva                 null                          220000
+
+3. To impose Check constraint to salary column of employees table.
+ALTER TABLE employees  ADD (CONSTRAINT emp_sal_cc CHECK(salary > 1000));
+>Table altered.
+UPDATE employees SET salary = 9000 WHERE employee_id =601;
+=>1 row updated.
+=>UPDATE employees SET salary = 900 WHERE employee_id =605;
+*
+ERROR at line 1:
+ORA-02290: check constraint (CT2023503009.EMP_SAL_CC) violated.
+
+
+4.To add null values to the fields having NOT NULL constraint.
+
+ INSERT INTO employees (employee_id,first_name,last_name) VALUES(121,'Aswin',null);
+=>INSERT INTO employees (employee_id,first_name,last_name) VALUES(121,'Aswin',null)
+                                                                        *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("CT2023503009"."EMPLOYEES"."LAST_NAME")
+INSERT INTO employees VALUES(121,'Aswin','null','SADFSFSD','546.343.7678',TO_DATE('03-10-2005','dd_mm_yyyy'),'ST_MAN',100000,null,100,30);
+
+=>1 row created.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
+                                                              CURSORS,TRIGGERS,PROCEDURES
+
+SQL> select* from city;
+CITY_NAME               CITY_ID STATE
+-------------------- ---------- ------------------------------
+chennai                     101
+mumbai                      102
+pune                        103
+hyderabad                   104
+bengaluru                   105
+
+SQL> update city set state='tn' where city_id=101;
+1 row updated.
+SQL> update city set state='mah' where city_id=102;
+1 row updated.
+SQL> update city set city_name='cuttack' where city_id=103;
+1 row updated.
+SQL> update city set state='odi' where city_id=103;
+1 row updated.
+SQL> update city set state='tel' where city_id=104;
+1 row updated.
+SQL> update city set state='kar' where city_id=105;
+1 row updated.
+SQL> commit;
+Commit complete.
+
+SQL> select* from city;
+CITY_NAME               CITY_ID STATE
+-------------------- ---------- ------------------------------
+chennai                     101 tn
+mumbai                      102 mah
+cuttack                     103 odi
+hyderabad                   104 tel
+bengaluru                   105 kar
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//CURSORS:
+
+SQL> DECLARE
+  2      CURSOR cty_cur IS
+  3          SELECT city_id, city_name FROM city;  -- Only fetching city_id and city_name
+  4      v_city_id NUMBER;
+  5      v_city_name VARCHAR2(100);
+  6  BEGIN
+  7      OPEN cty_cur;
+  8
+  9      LOOP
+ 10          FETCH cty_cur INTO v_city_id, v_city_name;
+ 11          EXIT WHEN cty_cur%NOTFOUND;  
+ 12
+ 13          -- Print the result
+ 14          DBMS_OUTPUT.PUT_LINE('City ID: ' || v_city_id || ', Name: ' || v_city_name);
+ 15      END LOOP;
+ 16
+ 17      CLOSE cty_cur;
+ 18  END;
+ 19  /
+City ID: 101, Name: chennai
+City ID: 102, Name: mumbai
+City ID: 103, Name: cuttack
+City ID: 104, Name: hyderabad
+City ID: 105, Name: bengaluru
+
+PL/SQL procedure successfully completed.
+
+// Cursor to Retrieve City Data
+
+
+SQL> DECLARE
+  2      -- Declare a cursor to select city_id, city_name, and state
+  3      CURSOR cty_cur IS
+  4          SELECT city_id, city_name, state FROM city;  
+  5      v_city_id city.city_id%TYPE; 
+  6      v_city_name city.city_name%TYPE; 
+  7      v_state city.state%TYPE;  
+  8  BEGIN
+  9      -- Open the cursor
+ 10      OPEN cty_cur;
+ 11
+ 12      -- Loop through the cursor and fetch data row by row
+ 13      LOOP
+ 14          FETCH cty_cur INTO v_city_id, v_city_name, v_state; 
+ 15          EXIT WHEN cty_cur%NOTFOUND;  
+ 16
+ 17          -- Display the fetched data using DBMS_OUTPUT
+ 18          DBMS_OUTPUT.PUT_LINE('City ID: ' || v_city_id || ', City Name: ' || v_city_name || ', State: ' || v_state);
+ 19      END LOOP;
+ 20
+ 21      -- Close the cursor
+ 22      CLOSE cty_cur;
+ 23  END;
+ 24  /
+City ID: 101, City Name: chennai, State: tn
+City ID: 102, City Name: mumbai, State: mah
+City ID: 103, City Name: cuttack, State: odi
+City ID: 104, City Name: hyderabad, State: tel
+City ID: 105, City Name: bengaluru, State: kar
+City ID: 106, City Name: ludhiana, State: pun
+
+PL/SQL procedure successfully completed.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//TRIGGERS
+
+
+SQL> CREATE OR REPLACE TRIGGER trig_cty
+  2  BEFORE INSERT ON city
+  3  FOR EACH ROW
+  4  BEGIN
+  5      IF :NEW.city_id < 100 THEN
+  6          RAISE_APPLICATION_ERROR(-23000, 'city_id cannot be less than 100');
+  7      END IF;
+  8  END;
+  9  /
+
+Trigger created.
+SQL> insert into city values('ludhiana',99,'pun');
+insert into city values('ludhiana',99,'pun')
+            *
+ERROR at line 1:
+ORA-21000: error number argument to raise_application_error of -23000 is out of
+range
+ORA-06512: at "SYSTEM.TRIG_CTY", line 3
+ORA-04088: error during execution of trigger 'SYSTEM.TRIG_CTY'
+
+SQL> insert into city values('ludhiana',106,'pun');
+1 row created.
+SQL> SELECT* FROM CITY;
+
+CITY_NAME               CITY_ID STATE
+-------------------- ---------- ------------------------------
+chennai                     101 tn
+mumbai                      102 mah
+cuttack                     103 odi
+hyderabad                   104 tel
+bengaluru                   105 kar
+ludhiana                    106 pun
+6 rows selected.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//PROCEDURE:
+
+1.Simple Procedure (No Parameters)
+SQL> CREATE OR REPLACE PROCEDURE insert_city(
+  2      p_city_id IN NUMBER,
+  3      p_city_name IN VARCHAR2,
+  4      p_state IN VARCHAR2
+  5  )
+  6  IS
+  7  BEGIN
+  8     
+  9      INSERT INTO city (city_id, city_name, state)
+ 10      VALUES (p_city_id, p_city_name, p_state);
+ 11
+ 12     
+ 13      COMMIT;
+ 14
+ 15  END insert_city;
+ 16  /
+
+Procedure created.
+
+//Calling the Procedure:
+SQL> EXEC insert_city(101, 'San Francisco', 'CA');
+PL/SQL procedure successfully completed.
+SQL> select* from city;
+CITY_NAME               CITY_ID STATE
+-------------------- ---------- ------------------------------
+chennai                     101 tn
+mumbai                      102 mah
+cuttack                     103 odi
+hyderabad                   104 tel
+bengaluru                   105 kar
+ludhiana                    106 pun
+San Francisco               101 CA
+
+7 rows selected.
+
+//2: Procedure with OUT Parameters
+
+SQL> CREATE OR REPLACE PROCEDURE get_city_name(
+  2      p_city_id IN NUMBER,        -- Input parameter
+  3      p_city_name OUT VARCHAR2    -- Output parameter
+  4  )
+  5  IS
+  6  BEGIN
+  7      -- Fetch the city name based on city_id
+  8      SELECT city_name
+  9      INTO p_city_name
+ 10      FROM city
+ 11      WHERE city_id = p_city_id;
+ 12
+ 13  END get_city_name;
+ 14  /
+
+Procedure created.
+
+//Calling the Procedure:
+
+SQL> DECLARE
+  2      v_city_name VARCHAR2(100);
+  3  BEGIN
+  4      get_city_name(105, v_city_name);
+  5      DBMS_OUTPUT.PUT_LINE('City Name: ' || v_city_name);
+  6  END;
+  7  /
+City Name: bengaluru
+
+PL/SQL procedure successfully completed.
