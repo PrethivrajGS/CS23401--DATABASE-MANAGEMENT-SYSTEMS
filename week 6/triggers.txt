@@ -1,0 +1,474 @@
+PRETHIVRAJ GS
+2023503009
+PLSQL TRIGGERS
+WEEK 7
+
+SQL> select* from pen;
+
+        ID COUNTRY                               CID                            
+---------- ------------------------------ ----------                            
+      1001 usa                                   101                            
+      1002 uk                                    102                            
+      1003 italy                                 103                            
+      1004 japan                                 104                            
+      1005 canada                                105                            
+
+SQL> create or replace trigger affect before insert on pen
+  2  for each row
+  3  begin
+  4     insert into pen values(1006,'india',106);
+  5  end;
+  6  /
+
+Trigger created.
+
+SQL> select* from pen;
+
+        ID COUNTRY                               CID                            
+---------- ------------------------------ ----------                            
+      1001 usa                                   101                            
+      1002 uk                                    102                            
+      1003 italy                                 103                            
+      1004 japan                                 104                            
+      1005 canada                                105                            
+
+SQL> set serveroutput on;
+SQL> exec affect;
+BEGIN affect; END;
+
+      *
+ERROR at line 1:
+ORA-06550: line 1, column 7: 
+PLS-00201: identifier 'AFFECT' must be declared 
+ORA-06550: line 1, column 7: 
+PL/SQL: Statement ignored 
+
+SQL> create table affect( id number,country varchar(20), cid number);
+
+Table created.
+
+SQL> select* from affect;
+
+no rows selected
+
+SQL> create or replace trigger affect before insert on pen
+  2  for each row
+  3  begin
+  4     insert into pen values(1006,'india',106);
+  5  end;
+  6  /
+
+Trigger created.
+
+SQL> select* from affect;
+
+no rows selected
+
+SQL> create or replace trigger affect before insert on pen
+  2  for each row
+  3  begin
+  4    update pen set country='india' where id=1001;
+  5  end;
+  6  /
+
+Trigger created.
+
+SQL> insert into pen values(1007,'lanka',107);
+
+1 row created.
+
+SQL> select* from pen;
+
+        ID COUNTRY                               CID                            
+---------- ------------------------------ ----------                            
+      1007 lanka                                 107                            
+      1001 india                                 101                            
+      1002 uk                                    102                            
+      1003 italy                                 103                            
+      1004 japan                                 104                            
+      1005 canada                                105                            
+
+6 rows selected.
+
+SQL> create or replace trigger palam after insert on pen
+  2  for each row
+  3  begin
+  4     raise_application_error(-20099, 'not allow to delete')
+  5  end;
+  6  /
+
+Warning: Trigger created with compilation errors.
+
+SQL> create or replace trigger palam after insert on pen
+  2  for each row
+  3  begin
+  4     raise_application_error(-20099, 'not allow to delete');
+  5  end;
+  6  /
+
+Trigger created.
+
+SQL> insert into pen values(1007,'lanka',107);
+insert into pen values(1007,'lanka',107)
+            *
+ERROR at line 1:
+ORA-20099: not allow to delete 
+ORA-06512: at "CT2023503009.PALAM", line 2 
+ORA-04088: error during execution of trigger 'CT2023503009.PALAM' 
+
+
+SQL> insert into pen values(1008,'usa',108);
+insert into pen values(1008,'usa',108)
+            *
+ERROR at line 1:
+ORA-20099: not allow to delete 
+ORA-06512: at "CT2023503009.PALAM", line 2 
+ORA-04088: error during execution of trigger 'CT2023503009.PALAM' 
+
+
+SQL> select* from pen;
+
+        ID COUNTRY                               CID                            
+---------- ------------------------------ ----------                            
+      1007 lanka                                 107                            
+      1001 india                                 101                            
+      1002 uk                                    102                            
+      1003 italy                                 103                            
+      1004 japan                                 104                            
+      1005 canada                                105                            
+
+6 rows selected.
+
+SQL> delete from pen where id=1005;
+
+1 row deleted.
+
+SQL> select* from pen;
+
+        ID COUNTRY                               CID                            
+---------- ------------------------------ ----------                            
+      1007 lanka                                 107                            
+      1001 india                                 101                            
+      1002 uk                                    102                            
+      1003 italy                                 103                            
+      1004 japan                                 104                            
+
+SQL> create or replace trigger before_update before update on pen
+  2  for each row
+  3  begin
+  4     insert into pen values(1008,'usa',108);
+  5  end;
+  6  /
+
+Trigger created.
+
+SQL> update pen set country='uganda' where id=1004;
+update pen set country='uganda' where id=1004
+       *
+ERROR at line 1:
+ORA-04091: table CT2023503009.PEN is mutating, trigger/function may not see it 
+ORA-06512: at "CT2023503009.BEFORE_UPDATE", line 2 
+ORA-04088: error during execution of trigger 'CT2023503009.BEFORE_UPDATE' 
+
+
+SQL> create table students(name varchar(20),roll_no number);
+
+Table created.
+
+SQL> CREATE TABLE LATERAL1(NAME VARCHAR(20),ROLL_NO NUMBER);
+
+Table created.
+
+SQL> create or replace trigger stu_add after insert on students
+  2  for each row
+  3  declare
+  4    roll1 number(20);
+  5  begin
+  6     roll1:= :NEW.roll_no/1000000;
+  7     if(roll1 = 2024) then
+  8      insert into lateral1 (name,roll_no) values (:NEW.name,:NEW.roll_no);
+  9  END IF;
+ 10  END;
+ 11  /
+
+Trigger created.
+
+SQL> INSERT INTO STUDENTS VALUES( 'GSP',2023503009);
+
+1 row created.
+
+SQL> SELECT* FROM GSP;
+
+COUNTRY_ID COUNTRY_NAME                                                         
+---------- -------------------------                                            
+       201 INDIA                                                                
+       202 PAKISTAN                                                             
+       203 SINGAPORE                                                            
+       204 TAIWAN                                                               
+       205 NAMIBIA                                                              
+       206 LANKA                                                                
+       207 ADELAIDE                                                             
+       208 JAPAN                                                                
+
+8 rows selected.
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO                                                 
+-------------------- ----------                                                 
+GSP                  2023503009                                                 
+
+SQL> SELECT* FROM LATERAL1;
+
+NAME                    ROLL_NO                                                 
+-------------------- ----------                                                 
+GSP                  2023503009                                                 
+
+SQL> create or replace trigger stu_add after insert on students
+  2  for each row
+  3  declare
+  4    roll1 number(20);
+  5  begin
+  6     roll1:= :NEW.roll_no/1000000;
+  7     if(roll1 = 2025) then
+  8      insert into lateral1 (name,roll_no) values (:NEW.name,:NEW.roll_no);
+  9  END IF;
+ 10  END;
+ 11  /
+
+Trigger created.
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO                                                 
+-------------------- ----------                                                 
+GSP                  2023503009                                                 
+
+SQL> DELETE FROM STUDENTS WHERE NAME='GSP';
+1 row deleted.
+SQL> DELETE FROM LATERAL1 WHERE NAME='GSP';
+1 row deleted.
+SQL> SELECT* FROM STUDENTS;
+no rows selected
+SQL> INSERT INTO STUDENTS VALUES( 'GSP',2023503009);
+1 row created.
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO                                                 
+-------------------- ----------                                                 
+GSP                  2023503009                                                 
+
+SQL> SELECT* FROM LATERAL1;
+no rows selected
+SQL> INSERT INTO STUDENTS VALUES( 'PRANESH',2024503009);
+1 row created.
+SQL> INSERT INTO STUDENTS VALUES( 'JAGAN',2024503001);
+1 row created.
+SQL> INSERT INTO STUDENTS VALUES( 'AGNES',2023503001);
+1 row created.
+SQL> INSERT INTO STUDENTS VALUES( 'BAIYTA',2023503003);
+1 row created.
+SQL> INSERT INTO STUDENTS VALUES( 'KAVIN',2024503005);
+1 row created.
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO                                                 
+-------------------- ----------                                                 
+GSP                  2023503009                                                 
+PRANESH              2024503009                                                 
+JAGAN                2024503001                                                 
+AGNES                2023503001                                                 
+BAIYTA               2023503003                                                 
+KAVIN                2024503005                                                 
+
+6 rows selected.
+
+SQL> SELECT* FROM LATERAL1;
+
+NAME                    ROLL_NO                                                 
+-------------------- ----------                                                 
+PRANESH              2024503009                                                 
+JAGAN                2024503001                                                 
+KAVIN                2024503005                                                 
+
+SQL> SPOOL OFF;
+
+
+SQL> ALTER TABLE STUDENTS ADD ADM_TYPE VARCHAR(20);
+Table altered.
+SQL> ALTER TABLE LATERAL1 ADD ADM_TYPE VARCHAR(20);
+Table altered.
+
+SQL> SELECT*  FROM STUDENTS;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+GSP                  2023503009
+PRANESH              2024503009
+JAGAN                2024503001
+AGNES                2023503001
+BAIYTA               2023503003
+KAVIN                2024503005
+ASWIN                2023503507
+VETRI                2023503523
+SANTHOSH             2024503701
+
+9 rows selected.
+
+SQL> SELECT*  FROM LATERAL1;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+PRANESH              2024503009
+JAGAN                2024503001
+KAVIN                2024503005
+SANTHOSH             2024503701
+
+SQL> UPDATE STUDENTS SET ROLL_NO=2024503309 WHERE NAME='PRANESH';
+1 row updated.
+SQL> UPDATE STUDENTS SET ROLL_NO=2024503305 WHERE NAME='KAVIN';
+1 row updated.
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+GSP                  2023503009
+PRANESH              2024503309
+JAGAN                2024503001
+AGNES                2023503001
+BAIYTA               2023503003
+KAVIN                2024503305
+ASWIN                2023503507
+VETRI                2023503523
+SANTHOSH             2024503701
+
+9 rows selected.
+
+SQL> SELECT* FROM LATERAL1;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+PRANESH              2024503009
+JAGAN                2024503001
+KAVIN                2024503005
+SANTHOSH             2024503701
+
+SQL> UPDATE LATERAL1 SET ROLL_NO=2024503305 WHERE NAME='KAVIN';
+1 row updated.
+SQL> UPDATE LATERAL1 SET ROLL_NO=2024503309 WHERE NAME='PRANESH';
+1 row updated.
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+GSP                  2023503009
+PRANESH              2024503309
+JAGAN                2024503001
+AGNES                2023503001
+BAIYTA               2023503003
+KAVIN                2024503305
+ASWIN                2023503507
+VETRI                2023503523
+SANTHOSH             2024503701
+
+9 rows selected.
+
+SQL> SELECT* FROM LATERAL1;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+PRANESH              2024503309
+JAGAN                2024503001
+KAVIN                2024503305
+SANTHOSH             2024503701
+
+
+ DECLARE
+       CURSOR STU_CUR IS
+          SELECT NAME, ROLL_NO FROM "STUDENTS";
+  
+       v_roll_no "STUDENTS".ROLL_NO%TYPE;
+       v_name "STUDENTS".NAME%TYPE;
+  
+     BEGIN
+      OPEN STU_CUR;
+ 
+      LOOP
+         FETCH STU_CUR INTO v_name, v_roll_no;
+         EXIT WHEN STU_CUR%NOTFOUND;
+ 
+         v_roll_no :=FLOOR( v_roll_no/100);
+DBMS_OUTPUT.PUT_LINE('v_roll_no: ' || v_roll_no || ', v_name: ' || v_name);
+
+        IF (v_roll_no = 20235030) THEN
+            UPDATE "STUDENTS" SET ADM_TYPE = 'R' WHERE name = v_name;
+         ELSIF (v_roll_no = 20235035) THEN
+            UPDATE "STUDENTS" SET ADM_TYPE = 'S' WHERE name = v_name;
+ELSIF (v_roll_no = 20245030) THEN
+            UPDATE "STUDENTS" SET ADM_TYPE = 'LATERAL N' WHERE name = v_name;
+         ELSIF (v_roll_no = 20245033) THEN
+            UPDATE "LATERAL1" SET ADM_TYPE = 'lateral R' WHERE name = v_name;
+         ELSIF (v_roll_no = 20245037) THEN
+            UPDATE "STUDENTS" SET ADM_TYPE = 'lateral S' WHERE name = v_name;
+         END IF;
+ 
+      END LOOP;
+     COMMIT;
+      CLOSE STU_CUR;
+ 
+   END;
+   /
+
+v_roll_no: 20235030, v_name: GSP
+v_roll_no: 20245033, v_name: PRANESH
+v_roll_no: 20245030, v_name: JAGAN
+v_roll_no: 20235030, v_name: AGNES
+v_roll_no: 20235030, v_name: BAIYTA
+v_roll_no: 20245033, v_name: KAVIN
+v_roll_no: 20235035, v_name: ASWIN
+v_roll_no: 20235035, v_name: VETRI
+v_roll_no: 20245037, v_name: SANTHOSH
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT * FROM STUDENTS;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+GSP                  2023503009 R
+PRANESH              2024503309 lateral R
+JAGAN                2024503001 LATERAL N
+AGNES                2023503001 R
+BAIYTA               2023503003 R
+KAVIN                2024503305 lateral R
+ASWIN                2023503507 S
+VETRI                2023503523 S
+SANTHOSH             2024503701 lateral S
+  
+SQL> SELECT* FROM LATERAL1;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+PRANESH              2024503309 lateral R
+JAGAN                2024503001
+KAVIN                2024503305 lateral R
+SANTHOSH             2024503701
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO ADM_TYPE
+-------------------- ---------- --------------------
+GSP                  2023503009 R
+PRANESH              2024503309 lateral R
+JAGAN                2024503001
+AGNES                2023503001 R
+BAIYTA               2023503003 R
+KAVIN                2024503305 lateral R
+ASWIN                2023503507 S
+VETRI                2023503523 S
+SANTHOSH             2024503701 lateral S
+
