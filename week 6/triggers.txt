@@ -33,15 +33,6 @@ SQL> select* from pen;
       1005 canada                                105                            
 
 SQL> set serveroutput on;
-SQL> exec affect;
-BEGIN affect; END;
-
-      *
-ERROR at line 1:
-ORA-06550: line 1, column 7: 
-PLS-00201: identifier 'AFFECT' must be declared 
-ORA-06550: line 1, column 7: 
-PL/SQL: Statement ignored 
 
 SQL> create table affect( id number,country varchar(20), cid number);
 
@@ -89,15 +80,6 @@ SQL> select* from pen;
       1005 canada                                105                            
 
 6 rows selected.
-
-SQL> create or replace trigger palam after insert on pen
-  2  for each row
-  3  begin
-  4     raise_application_error(-20099, 'not allow to delete')
-  5  end;
-  6  /
-
-Warning: Trigger created with compilation errors.
 
 SQL> create or replace trigger palam after insert on pen
   2  for each row
