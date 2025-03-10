@@ -1,0 +1,140 @@
+1.Cursor to Check and Assign ADM_TYPE for New Students
+DECLARE
+    CURSOR stu_cur IS 
+        SELECT NAME, ROLL_NO FROM STUDENTS WHERE ADM_TYPE IS NULL;
+
+    v_name STUDENTS.NAME%TYPE;
+    v_roll_no STUDENTS.ROLL_NO%TYPE;
+    v_adm_type STUDENTS.ADM_TYPE%TYPE;
+
+BEGIN
+    OPEN stu_cur;
+    LOOP
+        FETCH stu_cur INTO v_name, v_roll_no;
+        EXIT WHEN stu_cur%NOTFOUND;
+
+        IF FLOOR(v_roll_no / 100) = 20235030 THEN
+            v_adm_type := 'R';
+        ELSIF FLOOR(v_roll_no / 100) = 20235035 THEN
+            v_adm_type := 'S';
+        ELSE
+            v_adm_type := 'lateral';
+        END IF;
+
+        UPDATE STUDENTS 
+        SET ADM_TYPE = v_adm_type 
+        WHERE NAME = v_name AND ADM_TYPE IS NULL;
+
+    END LOOP;
+    CLOSE stu_cur;
+    COMMIT;
+END;
+/
+
+2.Trigger to Set STATUS = 'YES' for Lateral Students
+CREATE OR REPLACE TRIGGER trg_set_status
+BEFORE INSERT OR UPDATE ON STUDENTS
+FOR EACH ROW
+BEGIN
+    IF :NEW.ADM_TYPE = 'lateral' AND :NEW.STATUS IS NULL THEN
+        :NEW.STATUS := 'YES';
+    END IF;
+END;
+/
+
+3.Trigger to Set VERIFIED in LATERAL1
+CREATE OR REPLACE TRIGGER trg_verify_lateral
+AFTER INSERT OR UPDATE ON STUDENTS
+FOR EACH ROW
+WHEN (NEW.STATUS = 'YES')
+DECLARE
+    v_exists NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_exists
+    FROM LATERAL1
+    WHERE NAME = :NEW.NAME AND ROLL_NO = :NEW.ROLL_NO;
+
+    IF v_exists = 0 THEN
+        INSERT INTO LATERAL1 (NAME, ROLL_NO, ADM_TYPE, STATUS) 
+        VALUES (:NEW.NAME, 'lateral', 'VERIFIED', :NEW.ROLL_NO);
+    ELSE
+        UPDATE LATERAL1 
+        SET ADM_TYPE = 'lateral'
+        WHERE NAME = :NEW.NAME AND ROLL_NO = :NEW.ROLL_NO AND ADM_TYPE IS NULL;
+    END IF;
+END;
+/
+
+
+4.Test the Fix
+
+INSERT INTO STUDENTS (NAME, ROLL_NO) VALUES ('FFSDFDSA', 2024503043);
+
+BEGIN
+DECLARE
+    CURSOR stu_cur IS 
+        SELECT NAME, ROLL_NO FROM STUDENTS WHERE ADM_TYPE IS NULL;
+
+    v_name STUDENTS.NAME%TYPE;
+    v_roll_no STUDENTS.ROLL_NO%TYPE;
+    v_adm_type STUDENTS.ADM_TYPE%TYPE;
+
+BEGIN
+    OPEN stu_cur;
+    LOOP
+        FETCH stu_cur INTO v_name, v_roll_no;
+        EXIT WHEN stu_cur%NOTFOUND;
+
+        IF FLOOR(v_roll_no / 100) = 20235030 THEN
+            v_adm_type := 'R';
+        ELSIF FLOOR(v_roll_no / 100) = 20235035 THEN
+            v_adm_type := 'S';
+        ELSE
+            v_adm_type := 'lateral';
+        END IF;
+
+        UPDATE STUDENTS 
+        SET ADM_TYPE = v_adm_type 
+        WHERE NAME = v_name AND ADM_TYPE IS NULL;
+
+    END LOOP;
+    CLOSE stu_cur;
+    COMMIT;
+END;
+END;
+/
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT* FROM STUDENTS;
+
+NAME                    ROLL_NO ADM_TYPE             STATUS
+-------------------- ---------- -------------------- --------------------
+AGNES                2024503023 lateral              YES
+AGNES                2024503023 lateral              YES
+PRANESH              2024503009 lateral              YES
+KAVIN                2024503007 lateral              YES
+DEVA                 2024503005 lateral              YES
+BAIYA                2023503003 R
+PANGALI              2023503005 R
+SHRIKANTH            2023503007 R
+ASWIN                2023503507 S
+BIRUNDHA             2023503509 S
+VETRI                2023503523 S
+
+NAME                    ROLL_NO ADM_TYPE             STATUS
+-------------------- ---------- -------------------- --------------------
+RAKESH               2024503067 lateral              YES
+
+12 rows selected.
+
+SQL> SELECT* FROM LATERAL1;
+
+NAME                 ADM_TYPE             STATUS               ROLL_NO
+-------------------- -------------------- -------------------- --------------------
+AGNES                lateral              VERIFIED             2024503023
+PRANESH              lateral              VERIFIED             2024503009
+KAVIN                lateral              VERIFIED             2024503007
+DEVA                 lateral              VERIFIED             2024503005
+RAKESH               lateral              VERIFIED             2024503067
+
