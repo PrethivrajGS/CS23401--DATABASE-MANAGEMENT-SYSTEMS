@@ -1,0 +1,193 @@
+PRETHIVRAJ GS
+2023503009
+SET OPERATIONS
+
+1.union:
+SQL> select name from students union select name from lateral1;
+NAME
+--------------------
+AGNES
+ASWIN
+BAIYTA
+GSP
+JAGAN
+KAVIN
+PRANESH
+SANTHOSH
+VETRI
+santhosh
+
+10 rows selected.
+SQL> select 'gsp' as name, 99 as marks,'palacode' as city from dual union select 'sam' as name ,90 as marks,'chennai' as city from dual;
+
+NAM      MARKS CITY
+--- ---------- --------
+gsp         99 palacode
+sam         90 chennai
+
+DEPARTMENT_ID MANAGER_ID
+------------- ----------
+           10        101
+           10        200
+           20        100
+           20        201
+           30        100
+           30        114
+           40        101
+           40        203
+           50        100
+           50        120
+           50        121
+
+DEPARTMENT_ID MANAGER_ID
+------------- ----------
+           50        122
+           50        123
+           50        124
+           60        102
+           60        103
+           70        101
+           70        204
+           80        100
+           80        145
+           80        146
+           80        147
+
+DEPARTMENT_ID MANAGER_ID
+------------- ----------
+           80        148
+           80        149
+           90        100
+           90
+          100        101
+          100        108
+          110        101
+          110        102
+          110        205
+          120
+          130
+
+DEPARTMENT_ID MANAGER_ID
+------------- ----------
+          140
+          150
+          160
+          170
+          180
+          190
+          200
+          210
+          220
+          230
+          240
+
+DEPARTMENT_ID MANAGER_ID
+------------- ----------
+          250
+          260
+          270
+                     149
+
+48 rows selected.
+
+2.intersect:
+SQL> select name from students intersect select name from lateral1;
+
+NAME
+--------------------
+JAGAN
+KAVIN
+PRANESH
+SANTHOSH
+
+SQL> select 'gsp' as name, 99 as marks,'palacode' as city from dual intersect select 'sam' as name ,90 as marks,'chennai' as city from dual;
+
+no rows selected
+SQL> select department_id ,manager_id from departments1 intersect select department_id,manager_id from employees1;
+
+DEPARTMENT_ID MANAGER_ID
+------------- ----------
+           20        201
+           30        114
+           50        121
+           60        103
+           80        145
+           90        100
+          100        108
+          110        205
+
+8 rows selected.
+
+3.minus
+SQL> select name from students minus select name from lateral1;
+
+NAME
+--------------------
+AGNES
+ASWIN
+BAIYTA
+GSP
+VETRI
+
+SQL> select name from lateral1 minus select name from students;
+
+NAME
+--------------------
+santhosh
+
+4.union all 
+SQL> select name from lateral1 union all select name from students;
+
+NAME
+--------------------
+PRANESH
+JAGAN
+KAVIN
+SANTHOSH
+santhosh
+GSP
+PRANESH
+JAGAN
+AGNES
+BAIYTA
+KAVIN
+
+NAME
+--------------------
+ASWIN
+VETRI
+SANTHOSH
+
+14 rows selected.
+
+5. CROSS JOIN:
+SQL> select* from city cross join region;
+
+NAME                    CITY_ID     REG_ID REG_NAME                  NAME
+-------------------- ---------- ---------- ------------------------- --------------------
+CHENNAI                     101        101 north                     delhi
+MUMBAI                      102        101 north                     delhi
+DELHI                       103        101 north                     delhi
+KOLKATA                     104        101 north                     delhi
+BENGALURU                   105        101 north                     delhi
+CHENNAI                     101        102 south                     chennai
+MUMBAI                      102        102 south                     chennai
+DELHI                       103        102 south                     chennai
+KOLKATA                     104        102 south                     chennai
+BENGALURU                   105        102 south                     chennai
+CHENNAI                     101        103 east                      kolkata
+
+NAME                    CITY_ID     REG_ID REG_NAME                  NAME
+-------------------- ---------- ---------- ------------------------- --------------------
+MUMBAI                      102        103 east                      kolkata
+DELHI                       103        103 east                      kolkata
+KOLKATA                     104        103 east                      kolkata
+BENGALURU                   105        103 east                      kolkata
+CHENNAI                     101        104 west                      mumbai
+MUMBAI                      102        104 west                      mumbai
+DELHI                       103        104 west                      mumbai
+KOLKATA                     104        104 west                      mumbai
+BENGALURU                   105        104 west                      mumbai
+
+20 rows selected.
+
