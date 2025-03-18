@@ -1,7 +1,3 @@
-PRETHIVRAJ GS
-2023503009
-SET OPERATIONS
-
 1.union:
 SQL> select name from students union select name from lateral1;
 NAME
