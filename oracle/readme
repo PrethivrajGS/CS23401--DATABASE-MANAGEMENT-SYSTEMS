@@ -1,0 +1,23 @@
+# 🎓 Student Management System (SQL + Node.js + Frontend)
+
+This project is a **Student Management System** that connects a **MySQL database** with a **Node.js backend** and a **simple frontend**. You can add students' details and view them in a table.
+
+## 🚀 Features
+- ✅ Add student records (Name & Roll No)
+- ✅ View all stored students
+- ✅ Backend using **Node.js (Express.js)**
+- ✅ Frontend using **HTML, CSS, JavaScript**
+- ✅ Database using **MySQL**
+
+---
+
+## 🛠 Tech Stack
+- **Frontend**: HTML, CSS, JavaScript  
+- **Backend**: Node.js, Express.js  
+- **Database**: MySQL  
+- **API Requests**: Fetch API  
+
+---
+
+## 📂 Project Structure
+
