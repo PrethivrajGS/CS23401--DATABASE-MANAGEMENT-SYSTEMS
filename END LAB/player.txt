@@ -1,0 +1,75 @@
+1.PLAYER:
+
+CREATE TABLE players (
+    player_id INT PRIMARY KEY NOT NULL,
+    name VARCHAR(100),
+    country VARCHAR(100),
+    category VARCHAR(20),
+    base_price DECIMAL(10,2),
+    CHECK (category IN ('batsman', 'bowler', 'keeper', 'allrounder'))
+);
+2.PLAYER_STATS:
+
+CREATE TABLE player_stats (
+    stats_id INT PRIMARY KEY,
+    player_id INT,
+    runs INT,
+    matches INT,
+    wickets INT,
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+);
+3.AUCTION:
+
+CREATE TABLE auction (
+    auction_id INT PRIMARY KEY,
+    player_id INT,
+    team VARCHAR(100),
+    final_price DECIMAL(10,2),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+);
+4.TRIGGER FOR CHECKING FINAL PRICE> BASE PRICE:
+
+CREATE OR REPLACE TRIGGER check_final_price_insert
+BEFORE INSERT ON auction
+FOR EACH ROW
+DECLARE
+    actual_base_price players.base_price%TYPE;
+BEGIN
+    -- Get the base_price from the players table for the corresponding player_id
+    SELECT base_price INTO actual_base_price
+    FROM players
+    WHERE player_id = :NEW.player_id;
+
+    -- Check if final_price is greater than base_price
+    IF :NEW.final_price <= actual_base_price THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Final price must be greater than base price');
+    END IF;
+END;
+/
+
+5.CURSOR FOR ALLROUNDER:
+
+DECLARE
+    CURSOR allrounder_cursor IS
+        SELECT ps.player_id, ps.runs, ps.wickets, ps.matches
+        FROM players p
+        JOIN player_stats ps ON p.player_id = ps.player_id
+        WHERE p.category = 'allrounder';
+
+    v_score NUMBER(10,2);
+
+BEGIN
+    FOR rec IN allrounder_cursor LOOP
+        IF rec.matches > 0 THEN
+            v_score := rec.runs + (20 * rec.wickets) / rec.matches;
+        ELSE
+            v_score := rec.runs; -- avoid divide by zero
+        END IF;
+
+        UPDATE player_stats
+        SET score = v_score,
+            rating = v_score
+        WHERE player_id = rec.player_id;
+    END LOOP;
+END;
+/
