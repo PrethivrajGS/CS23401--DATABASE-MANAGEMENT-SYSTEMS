@@ -1,4 +1,5 @@
-1.PLAYER:
+//CREATING TABLES:
+//1.PLAYER:
 
 CREATE TABLE players (
     player_id INT PRIMARY KEY NOT NULL,
@@ -8,7 +9,7 @@ CREATE TABLE players (
     base_price DECIMAL(10,2),
     CHECK (category IN ('batsman', 'bowler', 'keeper', 'allrounder'))
 );
-2.PLAYER_STATS:
+//2.PLAYER_STATS:
 
 CREATE TABLE player_stats (
     stats_id INT PRIMARY KEY,
@@ -18,7 +19,7 @@ CREATE TABLE player_stats (
     wickets INT,
     FOREIGN KEY (player_id) REFERENCES players(player_id)
 );
-3.AUCTION:
+//3.AUCTION:
 
 CREATE TABLE auction (
     auction_id INT PRIMARY KEY,
@@ -27,7 +28,8 @@ CREATE TABLE auction (
     final_price DECIMAL(10,2),
     FOREIGN KEY (player_id) REFERENCES players(player_id)
 );
-4.TRIGGER FOR CHECKING FINAL PRICE> BASE PRICE:
+
+//4.TRIGGER FOR CHECKING FINAL PRICE> BASE PRICE:
 
 CREATE OR REPLACE TRIGGER check_final_price_insert
 BEFORE INSERT ON auction
@@ -47,7 +49,7 @@ BEGIN
 END;
 /
 
-5.CURSOR FOR ALLROUNDER:
+//5.CURSOR FOR ALLROUNDER:
 
 DECLARE
     CURSOR allrounder_cursor IS
@@ -73,3 +75,43 @@ BEGIN
     END LOOP;
 END;
 /
+
+SQL> insert into players values(101,'chahal','INDIA','spinner',300000);
+insert into players values(101,'chahal','INDIA','spinner',300000)
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.SYS_C008385) violated
+
+//RESULT:
+SQL> select* from players;
+ PLAYER_ID NAME                      COUNTRY  CATEGORY    BASE_PRICE
+----------------------------------------------------------------------
+       101 dhoni                      ind       keeper      200000
+       102 steyn                      sa        bowler      300000
+       103 gayle                      wi        batsman     330000
+       104 bracewell                  nz      allrounder    230000
+       105 shanaka                    sl      allrounder    270000
+
+SQL> select * from player_stats;
+  STATS_ID  PLAYER_ID       RUNS    MATCHES    WICKETS
+---------- ---------- ---------- ---------- ----------
+         1        101      23000        290          8
+         2        102       2300        250        589
+         3        105       5000        150        189
+
+
+SQL> select * from auction;
+AUCTION_ID  PLAYER_ID TEAM   FINAL_PRICE
+-------------------------------------------
+       201        101 CSK       450000
+       231        102 DC        490000
+
+//AFTER EXECUTION OF CURSOR:
+
+SQL> select* from player_stats;
+  STATS_ID  PLAYER_ID       RUNS    MATCHES    WICKETS      SCORE     RATING
+---------- ---------- ---------- ---------- ---------- ---------- ----------
+         1        101      23000        290          8
+         2        102       2300        250        589
+         3        105       5000        150        189     5025.2     5025.2
+
